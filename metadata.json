@@ -1,0 +1,6 @@
+{
+  "name": "Tributa Onboarding",
+  "description": "Complete onboarding, verification, and interactive registration experience for Tributa with custom style guide guidelines.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

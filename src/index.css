@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Urbanist", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --color-brand-purple: #7C3AED;
+  --color-brand-purple-light: #A78BFA;
+  --color-brand-navy: #0F172A;
+  --color-brand-navy-card: #1E293B;
+  --color-brand-gray-light: #F3F4F6;
+  --color-brand-gray-dark: #6B7280;
+  --color-brand-success: #10B981;
+  --color-brand-warning: #F59E0B;
+  --color-brand-error: #EF4444;
+  --color-brand-info: #3B82F6;
+}
+
+/* Custom scrollbars for a clean premium look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
