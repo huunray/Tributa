@@ -525,82 +525,86 @@ export default function POSTerminal({
     <div className="h-full flex flex-col overflow-hidden bg-slate-50 font-sans md:relative" id="pos-terminal-widget">
       
       {/* Sub-header navigation with tabs and controls */}
-      <div className="bg-white border-b border-slate-200/80 px-6 py-2.5 flex justify-between items-center shrink-0">
-        <div className="flex gap-2">
-          <button 
-            onClick={() => setPosTab('checkout')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              posTab === 'checkout' 
-                ? 'bg-purple-50 text-brand-purple' 
-                : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-            }`}
-          >
-            Terminal checkout
-          </button>
-          <button 
-            onClick={() => setPosTab('summary')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              posTab === 'summary' 
-                ? 'bg-purple-50 text-brand-purple' 
-                : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
-            }`}
-          >
-            Daily report register
-          </button>
-        </div>
-
-        {/* Saved Cart Trigger */}
-        {posTab === 'checkout' && (
-          <div className="relative">
+      <div className="px-6 pt-6 shrink-0 bg-transparent">
+        <div className="flex border border-slate-200 bg-white p-1 rounded-xl shadow-xs gap-1.5 flex-wrap justify-between items-center w-full">
+          <div className="flex gap-2">
             <button 
-              onClick={() => setShowSavedCarts(!showSavedCarts)}
-              className="px-3 py-1.5 border border-slate-200 hover:border-brand-purple hover:bg-purple-50/30 text-slate-600 rounded-lg text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer"
+              onClick={() => setPosTab('checkout')}
+              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold transition-all rounded-lg cursor-pointer ${
+                posTab === 'checkout' 
+                  ? 'bg-purple-50 text-brand-purple font-extrabold' 
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+              }`}
             >
-              <FileText size={13} className="text-brand-purple" />
-              <span>Draft Carts ({savedCarts.length})</span>
-              <ChevronDown size={12} className="text-slate-400" />
+              <ShoppingCart size={14} className={posTab === 'checkout' ? 'text-brand-purple' : 'text-slate-400'} />
+              <span>Terminal checkout</span>
             </button>
-
-            {/* Micro Carts Drops */}
-            {showSavedCarts && (
-              <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl border border-slate-200 shadow-2xl z-40 p-3 max-h-72 overflow-y-auto">
-                <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3">Saved Cart drafts</h4>
-                {savedCarts.length === 0 ? (
-                  <p className="text-center text-xs text-slate-400 py-4 font-medium">No saved drafts found</p>
-                ) : (
-                  <div className="space-y-2">
-                    {savedCarts.map(draft => (
-                      <div key={draft.id} className="p-2 border border-slate-100 rounded-lg hover:border-brand-purple/40 hover:bg-purple-50/10 flex justify-between items-center gap-2">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs font-bold text-slate-800 truncate leading-snug">{draft.name}</p>
-                          <p className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
-                            <span>{draft.items.length} items</span>
-                            <span>•</span>
-                            <span>{draft.timestamp}</span>
-                          </p>
-                        </div>
-                        <div className="flex gap-1 shrink-0">
-                          <button 
-                            onClick={() => handleLoadDraft(draft)}
-                            className="p-1 px-1.5 rounded bg-brand-purple/10 text-brand-purple text-[10px] font-bold hover:bg-brand-purple text-white transition-colors"
-                          >
-                            Load
-                          </button>
-                          <button 
-                            onClick={() => setSavedCarts(savedCarts.filter(s => s.id !== draft.id))}
-                            className="p-1 rounded text-red-400 hover:text-red-600 hover:bg-slate-50 transition-colors"
-                          >
-                            <Trash2 size={12} />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+            <button 
+              onClick={() => setPosTab('summary')}
+              className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold transition-all rounded-lg cursor-pointer ${
+                posTab === 'summary' 
+                  ? 'bg-purple-50 text-brand-purple font-extrabold' 
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+              }`}
+            >
+              <Receipt size={14} className={posTab === 'summary' ? 'text-brand-purple' : 'text-slate-400'} />
+              <span>Daily report register</span>
+            </button>
           </div>
-        )}
+
+          {/* Saved Cart Trigger */}
+          {posTab === 'checkout' && (
+            <div className="relative">
+              <button 
+                onClick={() => setShowSavedCarts(!showSavedCarts)}
+                className="px-4 py-2 border border-slate-200 hover:border-brand-purple hover:bg-purple-50/30 text-slate-600 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer"
+              >
+                <FileText size={13} className="text-brand-purple" />
+                <span>Draft Carts ({savedCarts.length})</span>
+                <ChevronDown size={12} className="text-slate-400" />
+              </button>
+
+              {/* Micro Carts Drops */}
+              {showSavedCarts && (
+                <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl border border-slate-200 shadow-2xl z-40 p-3 max-h-72 overflow-y-auto">
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3">Saved Cart drafts</h4>
+                  {savedCarts.length === 0 ? (
+                    <p className="text-center text-xs text-slate-400 py-4 font-medium">No saved drafts found</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {savedCarts.map(draft => (
+                        <div key={draft.id} className="p-2 border border-slate-100 rounded-lg hover:border-brand-purple/40 hover:bg-purple-50/10 flex justify-between items-center gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-bold text-slate-800 truncate leading-snug">{draft.name}</p>
+                            <p className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
+                              <span>{draft.items.length} items</span>
+                              <span>•</span>
+                              <span>{draft.timestamp}</span>
+                            </p>
+                          </div>
+                          <div className="flex gap-1 shrink-0">
+                            <button 
+                              onClick={() => handleLoadDraft(draft)}
+                              className="p-1 px-1.5 rounded bg-brand-purple/10 text-brand-purple text-[10px] font-bold hover:bg-brand-purple text-white transition-colors"
+                            >
+                              Load
+                            </button>
+                            <button 
+                              onClick={() => setSavedCarts(savedCarts.filter(s => s.id !== draft.id))}
+                              className="p-1 rounded text-red-400 hover:text-red-600 hover:bg-slate-50 transition-colors"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {posTab === 'checkout' ? (
@@ -903,10 +907,10 @@ export default function POSTerminal({
           </div>
         ) : (
           /* MAIN TWO-COLUMN TERMINAL SCREEN */
-          <div className="flex-1 flex overflow-hidden lg:flex-row flex-col select-none">
+          <div className="flex-1 flex overflow-hidden lg:flex-row flex-col select-none px-6 pb-6 pt-1 gap-6 bg-transparent">
             
             {/* Mobile responsive panel selector buttons */}
-            <div className="lg:hidden flex border-b border-slate-200 shrink-0 bg-white text-slate-600">
+            <div className="lg:hidden flex border-b border-slate-200 shrink-0 bg-white text-slate-600 rounded-xl mb-3 overflow-hidden border">
               <button 
                 onClick={() => setMobileActivePanel('products')}
                 className={`flex-1 py-3 text-center text-xs font-bold border-b-2 transition-all ${
@@ -930,7 +934,7 @@ export default function POSTerminal({
             </div>
 
             {/* LEFT PANEL: PRODUCT SEARCH & GRID (Full height products with no cart underneath) */}
-            <div className={`flex-1 flex flex-col overflow-hidden min-w-0 bg-white ${
+            <div className={`flex-1 flex flex-col overflow-hidden min-w-0 bg-white border border-slate-200 rounded-2xl shadow-sm ${
               mobileActivePanel === 'products' ? 'flex' : 'hidden lg:flex'
             }`}>
               
@@ -1148,7 +1152,7 @@ export default function POSTerminal({
             </div>
 
             {/* RIGHT PANEL: CUSTOMER ASSIGNMENT & SHOPPING CART */}
-            <div className={`w-full lg:w-[420px] xl:w-[460px] bg-white border-l border-slate-200 shadow-xl flex flex-col overflow-hidden shrink-0 ${
+            <div className={`w-full lg:w-[420px] xl:w-[460px] bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col overflow-hidden shrink-0 ${
               mobileActivePanel === 'invoice_checkout' ? 'flex' : 'hidden lg:flex'
             }`}>
               

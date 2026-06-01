@@ -3,6 +3,7 @@ import { SignupState } from '../types';
 import Logo from './Logo';
 import POSTerminal from './POSTerminal';
 import InventoryModule from './InventoryModule';
+import VATModule from './VATModule';
 import {
   Home,
   ShoppingCart,
@@ -1378,6 +1379,11 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
           setInventoryItems={setInventoryItems}
           onAction={triggerNotification}
           formData={formData}
+        />
+      ) : activeTab === 'vat' ? (
+        <VATModule
+          formData={formData}
+          onAction={triggerNotification}
         />
       ) : (
         <EmptyState tab={activeTab} formData={formData} onAction={triggerNotification} />

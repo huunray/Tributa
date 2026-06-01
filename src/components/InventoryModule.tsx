@@ -827,42 +827,48 @@ export default function InventoryModule({
     <div className="flex-1 flex flex-col bg-slate-50 overflow-hidden text-xs">
       
       {/* Top Section Nav Tabs */}
-      <div className="bg-white border-b border-slate-200 px-6 py-1 flex justify-between items-center shrink-0">
-        <div className="flex gap-1 overflow-x-auto scrollbar-none py-1">
-          {[
-            { id: 'overview', label: 'Overview' },
-            { id: 'products', label: 'Products Directory' },
-            { id: 'stock', label: 'Stock Levels & Locations' },
-            { id: 'reconciliation', label: 'Stock-Take Wizard' },
-            { id: 'reports', label: 'Valuation Reports' }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => {
-                setActiveTab(tab.id as any);
-                setSearchQuery('');
-              }}
-              className={`px-3 py-2 text-xs font-extrabold whitespace-nowrap rounded-lg transition-all cursor-pointer ${
-                activeTab === tab.id 
-                  ? 'bg-purple-50 text-brand-purple font-black shadow-xs border border-purple-100' 
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
+      <div className="px-6 pt-6 shrink-0 bg-transparent">
+        <div className="flex border border-slate-200 bg-white p-1 rounded-xl shadow-xs gap-1.5 flex-wrap justify-between items-center w-full">
+          <div className="flex gap-1 overflow-x-auto scrollbar-none py-1">
+            {[
+              { id: 'overview', label: 'Overview', icon: PieChart },
+              { id: 'products', label: 'Products Directory', icon: Package },
+              { id: 'stock', label: 'Stock Levels & Locations', icon: Building2 },
+              { id: 'reconciliation', label: 'Stock-Take Wizard', icon: RefreshCw },
+              { id: 'reports', label: 'Valuation Reports', icon: FileSpreadsheet }
+            ].map(tab => {
+              const TabIcon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id as any);
+                    setSearchQuery('');
+                  }}
+                  className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold transition-all rounded-lg cursor-pointer whitespace-nowrap ${
+                    activeTab === tab.id 
+                      ? 'bg-purple-50 text-brand-purple font-extrabold' 
+                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                  }`}
+                >
+                  <TabIcon size={14} className={activeTab === tab.id ? 'text-brand-purple' : 'text-slate-400'} />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => {
-              resetForm();
-              setShowAddModal(true);
-            }} 
-            className="px-3 py-1.5 bg-[#7C3AED] hover:bg-opacity-95 text-white rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-all shrink-0 shadow-sm"
-          >
-            <Plus size={11} /> Add Product
-          </button>
+          <div className="flex items-center gap-2 pr-1">
+            <button 
+              onClick={() => {
+                resetForm();
+                setShowAddModal(true);
+              }} 
+              className="px-3 py-1.5 bg-[#7C3AED] hover:bg-opacity-95 text-white rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-all shrink-0 shadow-sm"
+            >
+              <Plus size={11} /> Add Product
+            </button>
+          </div>
         </div>
       </div>
 
