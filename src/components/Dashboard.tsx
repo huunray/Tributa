@@ -204,6 +204,40 @@ function EmptyState({ tab, formData, onAction }: EmptyStateProps) {
 export default function Dashboard({ formData, onLogout }: DashboardProps) {
   // Navigation active tab
   const [activeTab, setActiveTab] = useState('dashboard');
+
+  // Sync activeTab with URL 'page' parameter on load and popstate
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const pageParam = params.get('page');
+      const validTabs = ['dashboard', 'pos', 'inventory', 'vat', 'wht', 'vendors', 'financials', 'cit', 'advisory', 'reports', 'settings'];
+      
+      if (pageParam && validTabs.includes(pageParam)) {
+        setActiveTab(pageParam);
+      } else {
+        setActiveTab('dashboard');
+      }
+    };
+
+    handlePopState();
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Update URL parameters when activeTab changes
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    
+    params.set('screen', 'dashboard');
+    params.set('page', activeTab);
+    
+    const newSearch = `?${params.toString()}`;
+    if (window.location.search !== newSearch) {
+      window.history.pushState({}, '', `${url.pathname}${newSearch}`);
+    }
+  }, [activeTab]);
   
   // Search state across transactions, products, and vendors
   const [searchQuery, setSearchQuery] = useState('');

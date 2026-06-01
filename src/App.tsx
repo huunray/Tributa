@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SignupState, INITIAL_SIGNUP_STATE } from './types';
 import Logo from './components/Logo';
 import LoginForm from './components/LoginForm';
@@ -14,6 +14,51 @@ type ScreenState = 'login' | 'step1' | 'step2' | 'step3' | 'complete' | 'dashboa
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<ScreenState>('login');
+
+  // Load screen state from URL on mount and handle bank/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const screenParam = params.get('screen') as ScreenState | null;
+      const pageParam = params.get('page');
+      
+      if (screenParam && ['login', 'step1', 'step2', 'step3', 'complete', 'dashboard'].includes(screenParam)) {
+        setCurrentScreen(screenParam);
+      } else if (pageParam) {
+        setCurrentScreen('dashboard');
+      } else {
+        setCurrentScreen('login');
+      }
+    };
+
+    // Run once on load
+    handlePopState();
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Update URL whenever currentScreen changes
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    
+    if (currentScreen === 'dashboard') {
+      params.set('screen', 'dashboard');
+    } else {
+      params.set('screen', currentScreen);
+      // Clean up dashboard page parameter if we go back to signup/login
+      params.delete('page');
+    }
+    
+    const countParams = Array.from(params.keys()).length;
+    const newSearch = countParams > 0 ? `?${params.toString()}` : '';
+    const newUrl = `${url.pathname}${newSearch}`;
+    
+    if (window.location.search !== newSearch) {
+      window.history.pushState({}, '', newUrl);
+    }
+  }, [currentScreen]);
   const [formData, setFormData] = useState<SignupState>(INITIAL_SIGNUP_STATE);
 
   const handleFormDataChange = (updates: Partial<SignupState>) => {
