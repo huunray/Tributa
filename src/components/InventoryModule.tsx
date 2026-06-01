@@ -976,11 +976,11 @@ export default function InventoryModule({
             </div>
 
             {/* Sec 2 & 3 Side by side layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
               
               {/* Left Side: Product Performance tracker (with dynamic timeframe filters) */}
-              <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
+              <div className="lg:col-span-8 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+                <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center min-h-[58px]">
                   <div>
                     <h3 className="font-extrabold text-xs text-slate-705 text-slate-700 uppercase tracking-widest flex items-center gap-2">
                       <TrendingUp size={14} className="text-brand-purple" />
@@ -1064,24 +1064,27 @@ export default function InventoryModule({
               </div>
 
               {/* Right Side: Low Stock Alerts widget list */}
-              <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-                <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-                  <h3 className="font-extrabold text-xs text-rose-700 uppercase tracking-widest flex items-center gap-1.5">
-                    <AlertTriangle size={14} className="text-amber-500" />
-                    <span>Low Stock Alerts</span>
-                  </h3>
+              <div className="lg:col-span-4 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+                <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center min-h-[58px]">
+                  <div>
+                    <h3 className="font-extrabold text-xs text-rose-700 uppercase tracking-widest flex items-center gap-1.5">
+                      <AlertTriangle size={14} className="text-amber-500" />
+                      <span>Low Stock Alerts</span>
+                    </h3>
+                    <p className="text-[9px] text-slate-400 mt-0.5">Real-time safety stock threshold violations</p>
+                  </div>
                   <button 
                     onClick={() => {
                       setSelectedStockStatus('Low');
                       setActiveTab('products');
                     }}
-                    className="text-[9px] text-brand-purple hover:underline font-extrabold cursor-pointer"
+                    className="text-[9px] text-brand-purple hover:underline font-extrabold cursor-pointer shrink-0"
                   >
                     View All
                   </button>
                 </div>
 
-                <div className="divide-y divide-slate-100 divide-dashed p-3.5 space-y-3 max-h-[300px] overflow-y-auto">
+                <div className="divide-y divide-slate-100 divide-dashed p-3.5 space-y-3 flex-1 overflow-y-auto max-h-[320px]">
                   {inventoryItems.filter(i => i.qty <= i.threshold).length === 0 ? (
                     <div className="py-12 text-center text-slate-400 space-y-1">
                       <CheckCircle2 size={32} className="text-emerald-500 mx-auto animate-none" />
