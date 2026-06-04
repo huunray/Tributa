@@ -935,33 +935,56 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
             <div className="p-6 space-y-6">
               
               {/* Dynamic welcome and onboarding parameter information summary */}
-              <div className="p-4 bg-white border-0 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 pb-2">
                 <div className="space-y-1">
-                  <span className="px-2 py-0.5 bg-purple-50 text-brand-purple text-[10px] font-bold tracking-wider rounded-md uppercase">
-                    Active FIRS Portal Sync
-                  </span>
-                  <h2 className="text-lg font-bold text-slate-900">
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-600 tracking-wider uppercase font-sans">
+                      Active FIRS Portal Sync
+                    </span>
+                  </div>
+                  <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">
                     Welcome back, {formData.fullName || 'Tributa Partner'}!
                   </h2>
-                  <p className="text-xs text-slate-500">
-                    Registered entity is classified as a <strong>{formData.businessType === 'corporate' ? 'corporate tax unit' : 'sole proprietor'}</strong> tied to <strong>{formData.industry || 'General Commerce'}</strong>. Stock evaluation model: <strong>{formData.inventoryMethod || 'FIFO'}</strong>.
-                  </p>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
+                    <span>Registered as {formData.businessType === 'corporate' ? 'Corporate Tax Unit' : 'Sole Proprietor'}</span>
+                    <span className="text-slate-300">•</span>
+                    <span>{formData.industry || 'General Commerce'} sector</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-slate-600 font-medium">
+                      {formData.inventoryMethod || 'FIFO'} evaluation model
+                    </span>
+                  </div>
                 </div>
 
-                <div className="p-2.5 bg-slate-50 border border-slate-200/80 rounded-lg text-xs space-y-1 font-mono text-slate-600 min-w-[210px]">
-                  <div className="flex justify-between">
-                    <span>ENTITY TYPE:</span>
-                    <span className="font-bold text-slate-800 capitalize">{formData.businessType}</span>
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-4 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+                  <div className="hidden lg:block h-6 w-px bg-slate-200/80" />
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] font-bold text-slate-400 tracking-wider uppercase block">Entity ID</span>
+                    <span className="text-xs font-semibold text-slate-800 capitalize">{formData.businessType}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>VAT REGISTRY:</span>
-                    <span className={`font-bold ${formData.vatRegistered ? 'text-red-500' : 'text-slate-500'}`}>
+
+                  <div className="h-6 w-px bg-slate-200/80" />
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] font-bold text-slate-400 tracking-wider uppercase block">VAT Status</span>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                      formData.vatRegistered 
+                        ? 'bg-red-50 text-red-600 border border-red-150/40' 
+                        : 'bg-slate-50 text-slate-500 border border-slate-200/50'
+                    }`}>
                       {formData.vatRegistered ? 'Registered' : 'Exempt'}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>TAX ID (TIN):</span>
-                    <span className="font-bold text-slate-800">{formData.vatNumber || 'Not Configured'}</span>
+
+                  <div className="h-6 w-px bg-slate-200/80" />
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] font-bold text-slate-400 tracking-wider uppercase block">Tax ID (TIN)</span>
+                    <span className="text-xs font-mono font-bold text-slate-800 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
+                      {formData.vatNumber || 'Not Configured'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -973,82 +996,106 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
                   tourActive && currentStep === 0 ? 'ring-4 ring-[#7C3AED] rounded-xl z-50 bg-slate-50 border border-slate-200/60 scale-[1.01] relative p-3 shadow-2xl' : 'p-0'
                 }`}
               >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="border border-slate-200/80 rounded-xl overflow-hidden bg-white grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
               
               {/* Card 1: Monthly Revenue (YTD) */}
-              <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Monthly Revenue (YTD)</span>
-                  <Sliders size={13} className="text-slate-300" />
+              <div className="relative bg-white p-5 flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Monthly Revenue (YTD)</span>
+                    <Sliders size={13} className="text-slate-300" />
+                  </div>
+                  <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
+                    {formatNaira(totalYtdRevenue)}
+                  </h3>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Total revenue (excluding VAT)</p>
                 </div>
-                <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
-                  {formatNaira(totalYtdRevenue)}
-                </h3>
-                <p className="text-[10px] text-slate-500 mt-0.5">Total revenue (excluding VAT)</p>
-                <div className="flex items-center gap-1.5 mt-2.5 pt-2.5 border-t border-slate-100 text-[10px] text-emerald-600 font-bold">
+                <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-slate-100 text-[10px] text-emerald-600 font-bold">
                   <span className="bg-emerald-50 px-1.5 py-0.5 rounded text-emerald-700 font-extrabold">+15%</span>
                   <span>vs last month</span>
                 </div>
+
+                {/* Aesthetic Inset Dividers */}
+                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="hidden sm:block lg:hidden absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="hidden sm:block lg:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
+                <div className="block sm:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
               </div>
 
               {/* Card 2: Outstanding Tax Obligations */}
-              <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Outstanding Tax Obligations</span>
-                  <span className="px-1.5 py-0.5 bg-red-50 text-red-600 border border-red-100 text-[9px] font-bold rounded-lg uppercase tracking-wider">
-                    {outstandingTaxObligations > 0 ? 'Due' : 'On Track'}
-                  </span>
+              <div className="relative bg-white p-5 flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Outstanding Tax Obligations</span>
+                    <span className="px-1.5 py-0.5 bg-red-50 text-red-600 border border-red-100 text-[9px] font-bold rounded-lg uppercase tracking-wider">
+                      {outstandingTaxObligations > 0 ? 'Due' : 'On Track'}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
+                    {formatNaira(outstandingTaxObligations)}
+                  </h3>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Total VAT + WHT due</p>
                 </div>
-                <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
-                  {formatNaira(outstandingTaxObligations)}
-                </h3>
-                <p className="text-[10px] text-slate-500 mt-0.5">Total VAT + WHT due</p>
-                <div className="flex items-center gap-1 pb-1 mt-2.5 pt-2.5 border-t border-slate-100 text-[10px] text-slate-500">
+                <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-slate-100 text-[10px] text-slate-500">
                   <Info size={11} className="text-slate-400 font-bold" />
-                  <span>Calculated at standard monthly rate tracker</span>
+                  <span>Calculated at standard rate tracker</span>
                 </div>
+
+                {/* Aesthetic Inset Dividers */}
+                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="hidden sm:block lg:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
+                <div className="block sm:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
               </div>
 
               {/* Card 3: Inventory Value */}
-              <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Inventory Value</span>
-                  {lowStockAlertsCount > 0 ? (
-                    <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-bold rounded-lg leading-none shrink-0 font-sans">
-                      {lowStockAlertsCount} Alert{lowStockAlertsCount > 1 ? 's' : ''}
-                    </span>
-                  ) : (
-                    <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] font-bold rounded-lg leading-none shrink-0">
-                      Standard
-                    </span>
-                  )}
+              <div className="relative bg-white p-5 flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Inventory Value</span>
+                    {lowStockAlertsCount > 0 ? (
+                      <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-bold rounded-lg leading-none shrink-0 font-sans">
+                        {lowStockAlertsCount} Alert{lowStockAlertsCount > 1 ? 's' : ''}
+                      </span>
+                    ) : (
+                      <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] font-bold rounded-lg leading-none shrink-0">
+                        Standard
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
+                    {formatNaira(totalStockAtCost)}
+                  </h3>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Current stock at cost ({formData.inventoryMethod || 'FIFO'})</p>
                 </div>
-                <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
-                  {formatNaira(totalStockAtCost)}
-                </h3>
-                <p className="text-[10px] text-slate-500 mt-0.5">Current stock at cost ({formData.inventoryMethod || 'FIFO'})</p>
-                <div className="flex items-center gap-1.5 mt-2.5 pt-2.5 border-t border-slate-100 text-[10px] text-slate-500">
-                  <span className="font-semibold text-slate-700 underline cursor-pointer" onClick={() => {
+                <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-slate-100 text-[10px] text-slate-500">
+                  <span className="font-semibold text-slate-700 underline cursor-pointer hover:text-brand-purple transition-all" onClick={() => {
                     setActiveTab('inventory');
                   }}>
                     Manage catalog
                   </span>
                 </div>
+
+                {/* Aesthetic Inset Dividers */}
+                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="hidden sm:block lg:hidden absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="block sm:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
               </div>
 
               {/* Card 4: Profit Before Tax (YTD) */}
-              <div className="bg-white border border-slate-200 rounded-xl p-4">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Profit Before Tax (YTD)</span>
-                  <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 text-[9px] font-bold rounded-lg uppercase tracking-wider">
-                    On Track
-                  </span>
+              <div className="relative bg-white p-5 flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Profit Before Tax (YTD)</span>
+                    <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 text-[9px] font-bold rounded-lg uppercase tracking-wider">
+                      On Track
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
+                    {formatNaira(estProfitBeforeTax)}
+                  </h3>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Management estimate</p>
                 </div>
-                <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
-                  {formatNaira(estProfitBeforeTax)}
-                </h3>
-                <p className="text-[10px] text-slate-500 mt-0.5">Management estimate</p>
-                <div className="flex items-center gap-1.5 mt-2.5 pt-2.5 border-t border-slate-100 text-[10px] text-slate-550">
+                <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-slate-100 text-[10px] text-slate-550">
                   {isEligibleForTaxRelief ? (
                     <span className="text-brand-purple font-semibold">✓ Custom Small Biz Allowance Active</span>
                   ) : (
@@ -1074,10 +1121,10 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
               <span className="text-[10px] text-slate-400 italic font-medium">Real-time parameters</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="border border-slate-200/80 rounded-xl overflow-hidden bg-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
               
               {/* Box 1: VAT */}
-              <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between space-y-4">
+              <div className="relative bg-white p-5 flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-sm text-slate-900">VAT</span>
@@ -1098,10 +1145,16 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
                 >
                   View VAT Dashboard
                 </button>
+
+                {/* Aesthetic Inset Dividers */}
+                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="hidden md:block lg:hidden absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="hidden md:block lg:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
+                <div className="block md:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
               </div>
 
               {/* Box 2: WHT */}
-              <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between space-y-4">
+              <div className="relative bg-white p-5 flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-sm text-slate-900">Withholding Tax</span>
@@ -1122,10 +1175,15 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
                 >
                   View WHT Schedule
                 </button>
+
+                {/* Aesthetic Inset Dividers */}
+                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="hidden md:block lg:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
+                <div className="block md:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
               </div>
 
               {/* Box 3: CIT */}
-              <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between space-y-4">
+              <div className="relative bg-white p-5 flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-sm text-slate-900">Companies Income Tax</span>
@@ -1147,10 +1205,15 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
                 >
                   Run CIT Computation
                 </button>
+
+                {/* Aesthetic Inset Dividers */}
+                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="hidden md:block lg:hidden absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
+                <div className="block md:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
               </div>
 
               {/* Box 4: Financial Statements */}
-              <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between space-y-4">
+              <div className="relative bg-white p-5 flex flex-col justify-between space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-sm text-slate-900">Financial Statements</span>
