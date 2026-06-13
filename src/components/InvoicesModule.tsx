@@ -768,7 +768,7 @@ export default function InvoicesModule({ formData, onAction }: InvoicesModulePro
                 className="px-4 py-2 bg-brand-purple hover:bg-opacity-95 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <Plus size={13} />
-                <span>+ New Invoice</span>
+                <span>New Invoice</span>
               </button>
             </div>
           </div>

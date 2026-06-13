@@ -1185,7 +1185,8 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
                         }}
                         className="px-3.5 py-1.5 bg-brand-purple hover:bg-opacity-90 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                       >
-                        <span>+ Register Invoice</span>
+                        <Plus size={13} />
+                        <span>Register Invoice</span>
                       </button>
                     </div>
                   </div>

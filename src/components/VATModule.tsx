@@ -437,7 +437,7 @@ export default function VATModule({ formData, onAction }: VATModuleProps) {
               className="px-3.5 py-1.5 bg-brand-purple hover:bg-opacity-95 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
               <Plus size={13} />
-              <span>+ Prepare VAT Return</span>
+              <span>Prepare VAT Return</span>
             </button>
           </div>
 
