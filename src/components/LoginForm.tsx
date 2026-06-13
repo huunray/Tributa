@@ -137,9 +137,9 @@ export default function LoginForm({ onGoToSignup, onLoginSuccess }: LoginFormPro
           {/* Submit CTA */}
           <button
             type="submit"
-            disabled={loading || success}
+            disabled={loading || success || !email.trim() || !password.trim()}
             className={`w-full py-2.5 rounded-[6px] font-sans font-semibold text-sm shadow-sm transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${
-              loading || success
+              loading || success || !email.trim() || !password.trim()
                 ? 'bg-slate-100 text-[#94A3B8] border border-slate-200 cursor-not-allowed'
                 : 'bg-brand-purple hover:bg-opacity-95 text-white active:scale-[0.99] hover:scale-[1.01]'
             }`}

@@ -15,6 +15,16 @@ type ScreenState = 'login' | 'step1' | 'step2' | 'step3' | 'complete' | 'dashboa
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<ScreenState>('login');
 
+  // Load initial theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
   // Load screen state from URL on mount and handle bank/forward navigation
   useEffect(() => {
     const handlePopState = () => {

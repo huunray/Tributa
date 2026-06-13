@@ -15,6 +15,8 @@
   --color-brand-info: #3B82F6;
 }
 
+@variant dark (&:where(.dark, .dark *));
+
 /* Custom scrollbars for a clean premium look */
 ::-webkit-scrollbar {
   width: 6px;
@@ -29,5 +31,403 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #475569;
+}
+
+/* ==========================================
+   TRIBUTA PREMIUM DARK MODE PALETTE
+   ========================================== */
+
+/* Base & Typography overrides */
+html.dark, html.dark body {
+  background-color: #0A0D18 !important; /* Premium rich obsidian black-slate */
+  color: #F8FAFC !important;
+}
+
+/* Onboarding Left/Right Column forms background and white-bg layouts */
+html.dark #interactive-form-canvas,
+html.dark #dashboard-root,
+html.dark .bg-white,
+html.dark .bg-slate-50,
+html.dark .bg-slate-100\/50,
+html.dark .bg-slate-100\/60,
+html.dark .bg-slate-100\/40,
+html.dark .bg-slate-100,
+html.dark .bg-slate-50\/40,
+html.dark .bg-slate-50\/50,
+html.dark .bg-\[\#F8FAFC\] {
+  background-color: #0C0F1A !important; /* Masterfully tuned deep obsidian card background */
+  color: #F8FAFC !important;
+}
+
+/* Deeper backdrop and workspace */
+html.dark main {
+  background-color: #05070D !important; /* Beautiful deeper space background for ultimate clean look */
+}
+
+/* Top search header and panels background spacing */
+html.dark header, html.dark #top-search-header {
+  background-color: #080B15 !important;
+  border-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Navigation aside drawer space */
+html.dark aside {
+  background-color: #080B15 !important;
+  border-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* KILL ALL HARSH WHITE LINES AND ALL LIGHT BORDERS GLOBALLY WITHOUT ENFORCING BORDERS ON TRANSPARENT ELEMENTS */
+html.dark hr,
+html.dark .border,
+html.dark [class*="border-"]:not(.border-transparent),
+html.dark [class*="divide-"] > *,
+html.dark .divide-y > * {
+  border-color: rgba(255, 255, 255, 0.04) !important; /* Perfect ultra-subtle translucent obsidian border lines */
+}
+
+/* Explicitly keep transparent borders transparent */
+html.dark .border-transparent {
+  border-color: transparent !important;
+}
+
+/* Kill vertical / horizontal divider lines that use background-color bands instead of borders */
+html.dark .bg-slate-200\/80,
+html.dark .bg-slate-200\/50,
+html.dark .bg-slate-200\/30,
+html.dark .bg-slate-200,
+html.dark .bg-slate-150,
+html.dark .bg-slate-300,
+html.dark .bg-slate-300\/40,
+html.dark .bg-slate-100,
+html.dark .w-px,
+html.dark .h-px {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Strict text lighting rules for excellent clarity & deep contrast */
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-slate-950,
+html.dark .text-slate-700,
+html.dark .text-slate-650 {
+  color: #F1F5F9 !important;
+}
+
+html.dark .text-slate-650 {
+  color: #E2E8F0 !important;
+}
+
+html.dark .text-slate-600 {
+  color: #E2E8F0 !important; /* Muted but readable text */
+}
+
+html.dark .text-slate-500 {
+  color: #94A3B8 !important;
+}
+
+html.dark .text-slate-400 {
+  color: #64748B !important;
+}
+
+/* High Contrast Alert Cards & Soft Badge Backgrounds (Resolves "Some boxes not very visible") */
+html.dark .bg-red-50\/20,
+html.dark .bg-rose-50\/20,
+html.dark .bg-rose-50\/10,
+html.dark [class*="bg-red-50"],
+html.dark [class*="bg-rose-50"] {
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}
+
+html.dark .bg-blue-50\/30,
+html.dark .bg-blue-50\/20,
+html.dark [class*="bg-blue-50"] {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+}
+
+html.dark .bg-purple-50\/20,
+html.dark .bg-purple-100\/40,
+html.dark [class*="bg-purple-50"],
+html.dark [class*="bg-purple-100"] {
+  background-color: rgba(124, 58, 237, 0.08) !important;
+  border: 1px solid rgba(124, 58, 237, 0.25) !important;
+}
+
+html.dark .bg-amber-50\/20,
+html.dark .bg-amber-50\/10,
+html.dark [class*="bg-amber-50"],
+html.dark [class*="bg-amber-100"],
+html.dark [class*="bg-yellow-50"] {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+html.dark [class*="bg-emerald-50"] {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+}
+
+/* Fix text contrast of alerts, labels and widgets inside dark containers */
+html.dark .text-rose-800,
+html.dark .text-rose-700,
+html.dark .text-rose-600,
+html.dark .text-red-800,
+html.dark .text-red-700,
+html.dark .text-red-600,
+html.dark [class*="text-rose-800"],
+html.dark [class*="text-rose-700"],
+html.dark [class*="text-red-800"],
+html.dark [class*="text-red-700"] {
+  color: #FFA3A3 !important; /* Bright soft red */
+}
+
+html.dark .text-amber-800,
+html.dark .text-amber-700,
+html.dark .text-amber-600,
+html.dark .text-yellow-800,
+html.dark .text-yellow-700,
+html.dark .text-yellow-600,
+html.dark .text-\[\#856404\],
+html.dark [class*="text-amber-800"],
+html.dark [class*="text-yellow-800"],
+html.dark [class*="text-\[\#856404\]"] {
+  color: #FFE082 !important; /* Soft warm amber-gold */
+}
+
+html.dark .text-emerald-800,
+html.dark .text-emerald-700,
+html.dark .text-emerald-600,
+html.dark .text-green-800,
+html.dark .text-green-700,
+html.dark .text-green-600,
+html.dark [class*="text-emerald-800"],
+html.dark [class*="text-green-800"] {
+  color: #81E6B9 !important; /* Soft minty-green */
+}
+
+html.dark .text-blue-800,
+html.dark .text-blue-700,
+html.dark .text-blue-600,
+html.dark .text-indigo-800,
+html.dark .text-indigo-700,
+html.dark .text-indigo-600,
+html.dark [class*="text-blue-800"],
+html.dark [class*="text-blue-700"] {
+  color: #ADC8FF !important; /* Soft vivid blue */
+}
+
+html.dark .text-brand-purple,
+html.dark .text-purple-800,
+html.dark .text-purple-700,
+html.dark .text-purple-600,
+html.dark [class*="text-brand-purple"],
+html.dark [class*="text-purple-850"],
+html.dark [class*="text-purple-800"],
+html.dark [class*="text-purple-700"] {
+  color: #E1C4FF !important; /* Soft premium lavender */
+}
+
+/* Ensure hardcoded slate-navy text and black text turn into highly visible premium white/slate in dark theme */
+html.dark .text-\[\#0F172A\],
+html.dark [class*="text-\[\#0F172A\]"],
+html.dark .text-black,
+html.dark [class*="text-black"] {
+  color: #F8FAFC !important;
+}
+
+html.dark .hover\:text-\[\#0F172A\]:hover,
+html.dark [class*="hover:text-\[\#0F172A\]"]:hover {
+  color: #FFFFFF !important;
+}
+
+/* Make sure text-brand-gray-dark is comfortably readable in dark theme */
+html.dark .text-brand-gray-dark {
+  color: #94A3B8 !important;
+}
+
+/* Explicitly override standard border classes in dark mode to prevent any white or light lines */
+html.dark .border-slate-100,
+html.dark .border-slate-150,
+html.dark .border-slate-200,
+html.dark .border-slate-300,
+html.dark .border-slate-400,
+html.dark .border-gray-150,
+html.dark .border-gray-200,
+html.dark .border-gray-300 {
+  border-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Quiet and minimal cards inside upcoming actions section in dark mode */
+html.dark #upcoming-actions-section [class*="bg-"] {
+  background-color: rgba(255, 255, 255, 0.015) !important; /* Extremely soft, almost invisible card background */
+  border: 1px solid rgba(255, 255, 255, 0.04) !important; /* Perfect ultra-subtle border matching global */
+}
+
+/* Ensure paragraph text is slate-400 (quieter) and doesn't conflict with colored alerts */
+html.dark #upcoming-actions-section p {
+  color: #94A3B8 !important;
+}
+
+/* Sophisticated minimalist tags and badges inside action alerts */
+html.dark #upcoming-actions-section span[class*="bg-"] {
+  background-color: rgba(255, 255, 255, 0.04) !important; /* Quiet transparent background instead of bright golds/reds */
+  color: #CBD5E1 !important; /* Clean readable grey text */
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Make action buttons in widget cards highly visible and sleek in dark mode */
+html.dark #upcoming-actions-section button,
+html.dark [id="upcoming-actions-section"] button {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark #upcoming-actions-section button:hover,
+html.dark [id="upcoming-actions-section"] button:hover {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Ensure primary brand buttons are a vibrant, high-contrast premium purple on dark theme */
+html.dark .bg-brand-purple,
+html.dark button.bg-brand-purple,
+html.dark form button[type="submit"]:not(:disabled) {
+  background-color: #7C3AED !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+}
+
+html.dark .bg-brand-purple:hover,
+html.dark button.bg-brand-purple:hover {
+  background-color: #6D28D9 !important;
+}
+
+/* Ensure disabled primary buttons on login/signup remain gray and look deactivated */
+html.dark .bg-brand-purple:disabled,
+html.dark button:disabled,
+html.dark button[disabled] {
+  background-color: #1E293B !important;
+  color: #64748B !important;
+  border: 1px solid #162032 !important;
+  cursor: not-allowed !important;
+}
+
+/* Category tab selection active button styling */
+html.dark .bg-black {
+  background-color: #1D4ED8 !important; /* Safe primary accent action */
+}
+
+/* Hover effects and active background lists */
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-100:hover,
+html.dark .hover\:bg-slate-200\/40:hover,
+html.dark .hover\:bg-slate-50\/60:hover {
+  background-color: #1A2235 !important;
+  color: #FFFFFF !important;
+}
+
+html.dark .bg-slate-200\/50 {
+  background-color: #162032 !important;
+  color: #F8FAFC !important;
+}
+
+/* Form controls inputs standard overrides */
+html.dark input,
+html.dark select,
+html.dark textarea,
+html.dark .form-select,
+html.dark .form-input {
+  background-color: #0E121E !important;
+  border-color: #1A2235 !important;
+  color: #FFFFFF !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #475569 !important;
+}
+
+/* Table elements structure design overrides */
+html.dark table th {
+  background-color: #0E121E !important;
+  color: #94A3B8 !important;
+  border-color: #162032 !important;
+}
+
+html.dark tbody tr {
+  background-color: #111625 !important;
+}
+
+html.dark tbody tr:hover {
+  background-color: #162032 !important;
+}
+
+/* Overriding shadow popups and dropdown panels */
+html.dark .absolute.bg-white {
+  background-color: #111625 !important;
+  border-color: #162032 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Sidebar Nav Buttons: Light Theme Minimal Updates */
+#navigation-sidebar nav button.bg-purple-50 {
+  border: 1px solid #E9D5FF !important; /* Elegant selected border on light theme */
+}
+
+/* Sidebar Nav Buttons: Minimal & Clean (No borders or backgrounds when unselected) */
+html.dark #navigation-sidebar {
+  background-color: #090C16 !important;
+  border-right: 1px solid #162032 !important;
+}
+
+html.dark #navigation-sidebar nav button {
+  background-color: transparent !important;
+  border: 1px solid transparent !important; /* NO border when unselected */
+  color: #94A3B8 !important; /* Elegant slate gray text for unselected state */
+  box-shadow: none !important;
+}
+
+html.dark #navigation-sidebar nav button:hover {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+}
+
+/* Active sidebar item gets colored background and border, matching user specifications */
+html.dark #navigation-sidebar nav button.bg-purple-50 {
+  background-color: rgba(124, 58, 237, 0.12) !important; /* Selected color overlay */
+  color: #C084FC !important; /* Premium purple selected text */
+  border: 1px solid rgba(124, 58, 237, 0.35) !important; /* Selected border */
+}
+
+/* Bottom profile section and logout button inside sidebar */
+html.dark #navigation-sidebar .bg-slate-100\/30 {
+  background-color: transparent !important;
+  border-top: 1px solid #162032 !important;
+}
+
+html.dark #navigation-sidebar button.bg-slate-200\/50 {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  color: #E2E8F0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+html.dark #navigation-sidebar button.bg-slate-200\/50:hover {
+  background-color: rgba(244, 63, 94, 0.08) !important;
+  color: #FDA4AF !important;
+  border-color: rgba(244, 63, 94, 0.25) !important;
+}
+
+/* Fixed Contrast for transparent widgets on Module screens (resolves faint/illegible text) */
+html.dark .bg-white\/50 {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .bg-white\/50 p, 
+html.dark .bg-white\/50 span {
+  color: #CBD5E1 !important; /* Highly visible slate-blue white text contrast */
 }
 

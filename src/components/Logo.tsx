@@ -51,7 +51,7 @@ export default function Logo({
       {showText && (
         <span
           className={`font-sans font-bold tracking-tight text-2xl ${
-            textColor === 'white' ? 'text-white' : 'text-[#0F172A]'
+            textColor === 'white' ? 'text-white' : 'text-[#0F172A] dark:text-white'
           }`}
         >
           Tributa

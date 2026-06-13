@@ -4,6 +4,7 @@ import Logo from './Logo';
 import POSTerminal from './POSTerminal';
 import InventoryModule from './InventoryModule';
 import VATModule from './VATModule';
+import InvoicesModule from './InvoicesModule';
 import {
   Home,
   ShoppingCart,
@@ -25,6 +26,8 @@ import {
   Info,
   Plus,
   Play,
+  Moon,
+  Sun,
   RotateCcw,
   Check,
   AlertTriangle,
@@ -38,6 +41,7 @@ import {
   EyeOff,
   UserCheck,
   FileSpreadsheet,
+  FileText,
   Menu,
   Minus,
   CreditCard,
@@ -89,6 +93,13 @@ function EmptyState({ tab, formData, onAction }: EmptyStateProps) {
           subtitle: `Track raw compounds, manufacturing stocks, and bulk items utilizing live valuation computed under the ${formData.inventoryMethod || 'FIFO'} method.`,
           primaryAction: "Perform Physical Cost Audit",
           description: "Configuring safety thresholds allows Tributa to trigger persistent status notifications on active items."
+        };
+      case 'invoices':
+        return {
+          title: "Invoices & Customer Billing",
+          subtitle: "Create, dispatch, and track custom professional sales invoices directly integrated with your accounting and VAT registry.",
+          primaryAction: "Run Invoice Reconciliation",
+          description: "All issued invoices automatically sync with your Output VAT calculations and customer billing statements."
         };
       case 'vat':
         return {
@@ -205,6 +216,28 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
   // Navigation active tab
   const [activeTab, setActiveTab] = useState('dashboard');
 
+  // Global Light/Dark Mode State
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        return savedTheme === 'dark';
+      }
+      return document.documentElement.classList.contains('dark');
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
   // Sync activeTab with URL 'page' parameter on load and popstate
   useEffect(() => {
     const handlePopState = () => {
@@ -301,17 +334,12 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
   const [tourActive, setTourActive] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
 
-  // 6-step guided tour specification targeting new design items without backdrop masking
+  // 5-step guided tour specification targeting new design items without backdrop masking
   const tourSteps: TourStep[] = [
     {
       title: "Real-time Quick Stats KPIs",
-      description: "Keep absolute control over your core accounts YTD. Tracks revenue, pending VAT & WHT, stock valuation at cost with your chosen valuation method, and estimated PBT estimates instantly.",
+      description: "Keep absolute control over your key stats. Tracks total sales, pending tax, and stock valuation in real-time.",
       targetId: "quick-stats-section"
-    },
-    {
-      title: "Tax Compliance Status (RAG)",
-      description: "Your live status for VAT, Withholding Tax, Companies Income Tax, and Financial Statements. Green is on track, Amber/Red needs immediate focus. Use the buttons inside each box to file, review, or compute in real-time.",
-      targetId: "compliance-rag-section"
     },
     {
       title: "Interactive Recent Transactions",
@@ -320,7 +348,7 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
     },
     {
       title: "Upcoming Actions & Reminders",
-      description: "Don't miss a statutory date! These smart action alerts inform you of tax deadlines, vendor KYC reviews, recommended quarters for CIT computations, and low stock alarms.",
+      description: "Don't miss a statutory date! These smart action alerts inform you of tax deadlines, vendor KYC reviews, CIT computations, and low stock alarms.",
       targetId: "upcoming-actions-section"
     },
     {
@@ -428,7 +456,7 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
 
   // Format Nigerian Naira currency
   const formatNaira = (value: number) => {
-    return '₦' + value.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+    return '₦' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
   // Filtered transactions for center search bar
@@ -524,6 +552,23 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
                     {lowStockAlertsCount}
                   </span>
                 )}
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveTab('invoices');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
+                  activeTab === 'invoices'
+                    ? 'bg-purple-50 text-brand-purple font-bold'
+                    : 'text-slate-600 hover:bg-slate-200/40 hover:text-slate-900'
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <FileText size={15} className={activeTab === 'invoices' ? 'text-brand-purple' : 'text-slate-400'} />
+                  <span>Invoices</span>
+                </div>
               </button>
 
               <button
@@ -763,6 +808,16 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
               <span>Tour</span>
             </button>
 
+            {/* Global Light/Dark Mode Toggle */}
+            <button
+              id="theme-mode-toggle"
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-brand-purple hover:bg-slate-100 transition-colors shrink-0 cursor-pointer"
+            >
+              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
             {/* Custom Settings Gear Icon */}
             <button
               onClick={() => {
@@ -934,534 +989,397 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
           {activeTab === 'dashboard' ? (
             <div className="p-6 space-y-6">
               
-              {/* Dynamic welcome and onboarding parameter information summary */}
-              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 pb-2">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <span className="text-[10px] font-bold text-emerald-600 tracking-wider uppercase font-sans">
-                      Active FIRS Portal Sync
-                    </span>
-                  </div>
-                  <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">
-                    Welcome back, {formData.fullName || 'Tributa Partner'}!
-                  </h2>
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
-                    <span>Registered as {formData.businessType === 'corporate' ? 'Corporate Tax Unit' : 'Sole Proprietor'}</span>
-                    <span className="text-slate-300">•</span>
-                    <span>{formData.industry || 'General Commerce'} sector</span>
-                    <span className="text-slate-300">•</span>
-                    <span className="text-slate-600 font-medium">
-                      {formData.inventoryMethod || 'FIFO'} evaluation model
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-4 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-100">
-                  <div className="hidden lg:block h-6 w-px bg-slate-200/80" />
-                  <div className="space-y-0.5">
-                    <span className="text-[9px] font-bold text-slate-400 tracking-wider uppercase block">Entity ID</span>
-                    <span className="text-xs font-semibold text-slate-800 capitalize">{formData.businessType}</span>
-                  </div>
-
-                  <div className="h-6 w-px bg-slate-200/80" />
-                  <div className="space-y-0.5">
-                    <span className="text-[9px] font-bold text-slate-400 tracking-wider uppercase block">VAT Status</span>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                      formData.vatRegistered 
-                        ? 'bg-red-50 text-red-600 border border-red-150/40' 
-                        : 'bg-slate-50 text-slate-500 border border-slate-200/50'
-                    }`}>
-                      {formData.vatRegistered ? 'Registered' : 'Exempt'}
-                    </span>
-                  </div>
-
-                  <div className="h-6 w-px bg-slate-200/80" />
-                  <div className="space-y-0.5">
-                    <span className="text-[9px] font-bold text-slate-400 tracking-wider uppercase block">Tax ID (TIN)</span>
-                    <span className="text-xs font-mono font-bold text-slate-800 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
-                      {formData.vatNumber || 'Not Configured'}
-                    </span>
-                  </div>
-                </div>
+              {/* Section 1: Welcome Greeting */}
+              <div className="space-y-1 pb-2">
+                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                  Welcome back, {formData.fullName || 'Tributa Partner'}!
+                </h2>
+                <p className="text-sm text-slate-500 font-medium">
+                  Here's your business today.
+                </p>
               </div>
 
-              {/* SECTION 1: QUICK STATS */}
+              {/* Section 2: Quick Stats (3 Simple Cards) */}
               <div
                 id="quick-stats-section"
                 className={`transition-all duration-300 ${
                   tourActive && currentStep === 0 ? 'ring-4 ring-[#7C3AED] rounded-xl z-50 bg-slate-50 border border-slate-200/60 scale-[1.01] relative p-3 shadow-2xl' : 'p-0'
                 }`}
               >
-            <div className="border border-slate-200/80 rounded-xl overflow-hidden bg-white grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-              
-              {/* Card 1: Monthly Revenue (YTD) */}
-              <div className="relative bg-white p-5 flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Monthly Revenue (YTD)</span>
-                    <Sliders size={13} className="text-slate-300" />
-                  </div>
-                  <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
-                    {formatNaira(totalYtdRevenue)}
-                  </h3>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Total revenue (excluding VAT)</p>
-                </div>
-                <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-slate-100 text-[10px] text-emerald-600 font-bold">
-                  <span className="bg-emerald-50 px-1.5 py-0.5 rounded text-emerald-700 font-extrabold">+15%</span>
-                  <span>vs last month</span>
-                </div>
+                <div className="border border-slate-200/80 rounded-xl bg-white overflow-hidden">
+                  
+                  {/* Row 1 */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 relative">
+                    
+                    {/* Card 1: Money In (This Month) */}
+                    <div className="relative p-5 flex flex-col justify-between min-h-[120px]">
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight block mb-1">
+                          Total sales this month
+                        </span>
+                        <h3 className="text-xl font-extrabold font-mono text-slate-900 tracking-tight mt-1.5">
+                          {formatNaira(totalYtdRevenue)}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-1.5 mt-4 text-[10px] text-emerald-600 font-bold">
+                        <span className="bg-emerald-50 px-1.5 py-0.5 rounded text-emerald-700 font-extrabold">+15%</span>
+                        <span>vs last month</span>
+                      </div>
+                    </div>
 
-                {/* Aesthetic Inset Dividers */}
-                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="hidden sm:block lg:hidden absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="hidden sm:block lg:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-                <div className="block sm:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-              </div>
+                    {/* Mobile Divider 1 */}
+                    <div className="block md:hidden h-px bg-slate-200/80" />
 
-              {/* Card 2: Outstanding Tax Obligations */}
-              <div className="relative bg-white p-5 flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Outstanding Tax Obligations</span>
-                    <span className="px-1.5 py-0.5 bg-red-50 text-red-600 border border-red-100 text-[9px] font-bold rounded-lg uppercase tracking-wider">
-                      {outstandingTaxObligations > 0 ? 'Due' : 'On Track'}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
-                    {formatNaira(outstandingTaxObligations)}
-                  </h3>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Total VAT + WHT due</p>
-                </div>
-                <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-slate-100 text-[10px] text-slate-500">
-                  <Info size={11} className="text-slate-400 font-bold" />
-                  <span>Calculated at standard rate tracker</span>
-                </div>
+                    {/* Desktop Vertical Accent Line 1 */}
+                    <div className="hidden md:block absolute left-1/3 top-0 bottom-0 w-px bg-slate-200/80" />
 
-                {/* Aesthetic Inset Dividers */}
-                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="hidden sm:block lg:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-                <div className="block sm:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-              </div>
-
-              {/* Card 3: Inventory Value */}
-              <div className="relative bg-white p-5 flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Inventory Value</span>
-                    {lowStockAlertsCount > 0 ? (
-                      <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-bold rounded-lg leading-none shrink-0 font-sans">
-                        {lowStockAlertsCount} Alert{lowStockAlertsCount > 1 ? 's' : ''}
-                      </span>
-                    ) : (
-                      <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 text-[9px] font-bold rounded-lg leading-none shrink-0">
-                        Standard
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
-                    {formatNaira(totalStockAtCost)}
-                  </h3>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Current stock at cost ({formData.inventoryMethod || 'FIFO'})</p>
-                </div>
-                <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-slate-100 text-[10px] text-slate-500">
-                  <span className="font-semibold text-slate-700 underline cursor-pointer hover:text-brand-purple transition-all" onClick={() => {
-                    setActiveTab('inventory');
-                  }}>
-                    Manage catalog
-                  </span>
-                </div>
-
-                {/* Aesthetic Inset Dividers */}
-                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="hidden sm:block lg:hidden absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="block sm:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-              </div>
-
-              {/* Card 4: Profit Before Tax (YTD) */}
-              <div className="relative bg-white p-5 flex flex-col justify-between">
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Profit Before Tax (YTD)</span>
-                    <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 text-[9px] font-bold rounded-lg uppercase tracking-wider">
-                      On Track
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold font-mono text-slate-900 tracking-tight mt-1.5">
-                    {formatNaira(estProfitBeforeTax)}
-                  </h3>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Management estimate</p>
-                </div>
-                <div className="flex items-center gap-1.5 mt-4 pt-2.5 border-t border-slate-100 text-[10px] text-slate-550">
-                  {isEligibleForTaxRelief ? (
-                    <span className="text-brand-purple font-semibold">✓ Custom Small Biz Allowance Active</span>
-                  ) : (
-                    <span className="text-slate-400 italic">Excluded from small business relief tier</span>
-                  )}
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* SECTION 2: TAX COMPLIANCE STATUS (RAG) */}
-          <div
-            id="compliance-rag-section"
-            className={`transition-all duration-300 ${
-              tourActive && currentStep === 1 ? 'ring-4 ring-[#7C3AED] rounded-xl z-50 bg-slate-50 border border-slate-200/60 scale-[1.01] relative p-3 shadow-2xl' : 'p-0'
-            }`}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                TAX COMPLIANCE STATUS INDICATORS (FIRS RAG)
-              </h3>
-              <span className="text-[10px] text-slate-400 italic font-medium">Real-time parameters</span>
-            </div>
-
-            <div className="border border-slate-200/80 rounded-xl overflow-hidden bg-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-              
-              {/* Box 1: VAT */}
-              <div className="relative bg-white p-5 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-sm text-slate-900">VAT</span>
-                    <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-semibold rounded-full uppercase">
-                      Return Due
-                    </span>
-                  </div>
-                  <div className="space-y-1 text-xs">
-                    <p className="text-slate-600 font-medium">Deadline: <strong className="text-slate-800">Due: 21st of month</strong></p>
-                    <p className="text-slate-500">Progress: <strong className="text-slate-800">4 of 12 months filed</strong></p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setActiveActionModal('vat');
-                  }}
-                  className="w-full text-center py-2 bg-slate-100 hover:bg-brand-purple hover:text-white transition-all text-xs font-bold text-brand-purple rounded-lg cursor-pointer"
-                >
-                  View VAT Dashboard
-                </button>
-
-                {/* Aesthetic Inset Dividers */}
-                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="hidden md:block lg:hidden absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="hidden md:block lg:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-                <div className="block md:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-              </div>
-
-              {/* Box 2: WHT */}
-              <div className="relative bg-white p-5 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-sm text-slate-900">Withholding Tax</span>
-                    <span className="px-2 py-0.5 bg-rose-50 text-rose-600 border border-rose-200 text-[9px] font-semibold rounded-full uppercase">
-                      Overdue
-                    </span>
-                  </div>
-                  <div className="space-y-1 text-xs">
-                    <p className="text-slate-600 font-medium">Deadline: <strong className="text-slate-800">Due: 21st monthly</strong></p>
-                    <p className="text-slate-500">Amount: <strong className="text-slate-800">₦220k remitted, ₦85k pending</strong></p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setActiveActionModal('wht');
-                  }}
-                  className="w-full text-center py-2 bg-slate-100 hover:bg-brand-purple hover:text-white transition-all text-xs font-bold text-brand-purple rounded-lg cursor-pointer"
-                >
-                  View WHT Schedule
-                </button>
-
-                {/* Aesthetic Inset Dividers */}
-                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="hidden md:block lg:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-                <div className="block md:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-              </div>
-
-              {/* Box 3: CIT */}
-              <div className="relative bg-white p-5 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-sm text-slate-900">Companies Income Tax</span>
-                    <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-semibold rounded-full uppercase">
-                      Estimated Liability
-                    </span>
-                  </div>
-                  <div className="space-y-1 text-xs">
-                    <p className="text-slate-600 font-medium">Tier: <strong className="text-brand-purple font-semibold">{formData.businessType === 'corporate' ? 'Small Company' : 'Exempt Individual'}</strong></p>
-                    <p className="text-slate-500">Deadline: <strong className="text-slate-800">Due: 6 mo post year-end</strong></p>
-                    <p className="text-slate-550 font-mono">Estimated: {formatNaira(totalYtdRevenue * 0.15)}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setActiveActionModal('cit');
-                  }}
-                  className="w-full text-center py-2 bg-slate-100 hover:bg-brand-purple hover:text-white transition-all text-xs font-bold text-brand-purple rounded-lg cursor-pointer"
-                >
-                  Run CIT Computation
-                </button>
-
-                {/* Aesthetic Inset Dividers */}
-                <div className="hidden lg:block absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="hidden md:block lg:hidden absolute right-0 top-[15%] bottom-[15%] w-px bg-slate-200/80" />
-                <div className="block md:hidden absolute bottom-0 left-[10%] right-[10%] h-px bg-slate-200/80" />
-              </div>
-
-              {/* Box 4: Financial Statements */}
-              <div className="relative bg-white p-5 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-sm text-slate-900">Financial Statements</span>
-                    <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-semibold rounded-full uppercase">
-                      In Progress
-                    </span>
-                  </div>
-                  <div className="space-y-1 text-xs">
-                    <p className="text-slate-600 font-medium">Last Generated: <strong className="text-slate-800">May 28, 2026</strong></p>
-                    <p className="text-slate-500">Includes: <strong className="text-slate-800">P&amp;L, Balance Sheet, Cash Flow</strong></p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setActiveActionModal('statements');
-                  }}
-                  className="w-full text-center py-2 bg-slate-100 hover:bg-brand-purple hover:text-white transition-all text-xs font-bold text-brand-purple rounded-lg cursor-pointer"
-                >
-                  Generate Statements
-                </button>
-              </div>
-
-            </div>
-          </div>
-
-          {/* TWO PANEL SECTION: LEFT IS RECENT TRANSACTIONS TABLE, RIGHT IS UPCOMING ACTIONS & REMINDERS */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            
-            {/* SECTION 3: RECENT TRANSACTIONS TABLE (LOVED REFACTOR) */}
-            <div
-              id="recent-transactions-section"
-              className={`lg:col-span-8 bg-white border border-slate-200 rounded-xl p-6 space-y-4 transition-all duration-300 ${
-                tourActive && currentStep === 2 ? 'ring-4 ring-[#7C3AED] z-50 scale-[1.01] relative shadow-2xl bg-white' : ''
-              }`}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/50 pb-4">
-                <div>
-                  <h3 className="font-bold text-base text-slate-900 font-sans flex items-center gap-2">
-                    Recent Transactions
-                    <span className="text-xs font-normal text-slate-400 font-mono">({filteredTransactions.length} entries)</span>
-                  </h3>
-                  <p className="text-xs text-slate-500">Real-time ledger audit trail indexed for tax calculation</p>
-                </div>
-                
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setActiveActionModal('new_invoice');
-                      triggerNotification("Opened quick ledger registration form.");
-                    }}
-                    className="px-3.5 py-1.5 bg-brand-purple hover:bg-opacity-90 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Plus size={13} />
-                    <span>Register Invoice</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Table rendering of last 10 transactions */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-700">
-                  <thead>
-                    <tr className="border-b border-slate-100 bg-slate-50 text-slate-500 uppercase tracking-tight text-[10px] font-bold">
-                      <th className="py-2 px-3">Date</th>
-                      <th className="py-2 px-3">Type</th>
-                      <th className="py-2 px-3">Description</th>
-                      <th className="py-2 px-3 text-right">Amount</th>
-                      <th className="py-2 px-3 text-center">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 divide-dashed font-sans">
-                    {filteredTransactions.slice(0, 10).map((t) => (
-                      <tr key={t.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="py-2.5 px-3 text-slate-400 font-mono font-medium">{t.date}</td>
-                        <td className="py-2.5 px-3">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            t.type === 'Sale'
-                              ? 'bg-purple-50 text-brand-purple border border-purple-150'
-                              : t.type === 'Receipt'
-                              ? 'bg-blue-50 text-blue-600 border border-blue-150'
-                              : 'bg-amber-50 text-amber-700 border border-amber-150'
-                          }`}>
-                            {t.type}
+                    {/* Card 2: Money Owed in Tax */}
+                    <div className="relative p-5 flex flex-col justify-between min-h-[120px]">
+                      <div>
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                            Tax due soon
                           </span>
-                        </td>
-                        <td className="py-2.5 px-3">
-                          <div className="font-semibold text-slate-800">{t.description}</div>
-                          <div className="text-[9px] text-slate-400 font-mono">{t.id}</div>
-                        </td>
-                        <td className="py-2.5 px-3 text-right font-mono font-bold text-slate-900">
-                          {formatNaira(t.amount)}
-                        </td>
-                        <td className="py-2.5 px-3 text-center">
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${
-                            t.status === 'Completed'
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                              : t.status === 'Pending'
-                              ? 'bg-amber-50 text-amber-700 border-amber-100'
-                              : 'bg-red-50 text-red-700 border-red-100'
+                          <span className={`px-2 py-0.5 border text-[9px] font-bold rounded-lg uppercase tracking-wider ${
+                            outstandingTaxObligations > 0 
+                              ? 'bg-rose-100 text-rose-800 border-rose-200' 
+                              : 'bg-emerald-50 text-emerald-700 border-emerald-100'
                           }`}>
-                            {t.status}
+                            {outstandingTaxObligations > 0 ? 'DUE' : 'ON TRACK'}
                           </span>
-                        </td>
-                      </tr>
-                    ))}
+                        </div>
+                        <h3 className="text-xl font-extrabold font-mono text-slate-900 tracking-tight mt-1.5">
+                          {formatNaira(outstandingTaxObligations)}
+                        </h3>
+                      </div>
+                      <div className="mt-4 text-[10px] text-slate-400 font-medium font-mono uppercase tracking-wider">
+                        Tax liabilities
+                      </div>
+                    </div>
 
-                    {filteredTransactions.length === 0 && (
-                      <tr>
-                        <td colSpan={5} className="py-8 text-center text-slate-400 italic">
-                          No transactions matching "{searchQuery}" found in active ledgers.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+                    {/* Mobile Divider 2 */}
+                    <div className="block md:hidden h-px bg-slate-200/80" />
+
+                    {/* Desktop Vertical Accent Line 2 */}
+                    <div className="hidden md:block absolute left-2/3 top-0 bottom-0 w-px bg-slate-200/80" />
+
+                    {/* Card 3: Stock Value */}
+                    <div className="relative p-5 flex flex-col justify-between min-h-[120px]">
+                      <div>
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                            Value of items in stock
+                          </span>
+                          {lowStockAlertsCount > 0 && (
+                            <span className="px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-bold rounded-lg uppercase tracking-wider shrink-0">
+                              {lowStockAlertsCount} low
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="text-xl font-extrabold font-mono text-slate-900 tracking-tight mt-1.5">
+                          {formatNaira(totalStockAtCost)}
+                        </h3>
+                      </div>
+                      <div className="mt-4 text-[10px] text-slate-500 font-semibold font-sans">
+                        {lowStockAlertsCount > 0 ? `${lowStockAlertsCount} items low` : 'Stock Levels Standard'}
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Horizontal Separator Line (connects fully to edges) */}
+                  <div className="h-px bg-slate-200/80" />
+
+                  {/* Row 2 */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 relative">
+                    
+                    {/* Card 4: Total Revenue (consistent with expanded layout) */}
+                    <div className="relative p-5 flex flex-col justify-between min-h-[120px]">
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight block mb-1">
+                          Total Revenue
+                        </span>
+                        <h3 className="text-xl font-extrabold font-mono text-slate-900 tracking-tight mt-1.5">
+                          {formatNaira(4800000)}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-1.5 mt-4 text-[10px] text-indigo-600 font-bold">
+                        <span className="bg-indigo-50 px-1.5 py-0.5 rounded text-indigo-700 font-extrabold">+18.20%</span>
+                        <span>this month</span>
+                      </div>
+                    </div>
+
+                    {/* Mobile Divider 3 */}
+                    <div className="block md:hidden h-px bg-slate-200/80" />
+
+                    {/* Desktop Vertical Accent Line 3 */}
+                    <div className="hidden md:block absolute left-1/3 top-0 bottom-0 w-px bg-slate-200/80" />
+
+                    {/* Card 5: Invoices Issued */}
+                    <div className="relative p-5 flex flex-col justify-between min-h-[120px]">
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight block mb-1">
+                          Invoices Issued
+                        </span>
+                        <h3 className="text-xl font-extrabold font-mono text-slate-900 tracking-tight mt-1.5">
+                          247
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-1.5 mt-4 text-[10px] text-emerald-600 font-bold">
+                        <span className="bg-emerald-50 px-1.5 py-0.5 rounded text-emerald-700 font-extrabold">+12.50%</span>
+                        <span>vs last month</span>
+                      </div>
+                    </div>
+
+                    {/* Mobile Divider 4 */}
+                    <div className="block md:hidden h-px bg-slate-200/80" />
+
+                    {/* Desktop Vertical Accent Line 4 */}
+                    <div className="hidden md:block absolute left-2/3 top-0 bottom-0 w-px bg-slate-200/80" />
+
+                    {/* Card 6: Net VAT Payable */}
+                    <div className="relative p-5 flex flex-col justify-between min-h-[120px]">
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight block mb-1">
+                          Net VAT Payable
+                        </span>
+                        <h3 className="text-xl font-extrabold font-mono text-slate-900 tracking-tight mt-1.5">
+                          {formatNaira(225750)}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-1.5 mt-4 text-[10px] text-amber-600 font-bold">
+                        <span className="bg-amber-50 px-1.5 py-0.5 rounded text-amber-700 font-extrabold">Warning</span>
+                        <span>Due in 5 days</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
               </div>
 
-              {/* Expander list trigger */}
-              <div className="pt-2 border-t border-slate-100 flex justify-center">
-                <button
-                  onClick={() => {
-                    setActiveActionModal('audit_trail');
-                  }}
-                  className="text-xs text-brand-purple hover:underline font-bold flex items-center gap-1 cursor-pointer"
-                >
-                  View Full Transaction History
-                  <ArrowRight size={13} />
-                </button>
-              </div>
-            </div>
-
-            {/* SECTION 4: UPCOMING ACTIONS & REMINDERS PANEL */}
-            <div
-              id="upcoming-actions-section"
-              className={`lg:col-span-4 bg-white border border-slate-200 rounded-xl p-6 space-y-4 transition-all duration-300 ${
-                tourActive && currentStep === 3 ? 'ring-4 ring-[#7C3AED] z-50 scale-[1.01] relative shadow-2xl bg-white' : ''
-              }`}
-            >
-              <div className="border-b border-slate-200/50 pb-3">
-                <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
-                  <Calendar size={15} className="text-brand-purple" />
-                  Upcoming Actions &amp; Reminders
-                </h3>
-                <p className="text-xs text-slate-400">Statutory countdown alarms &amp; tasks</p>
-              </div>
-
-              <div className="space-y-4">
+              {/* TWO PANEL SECTION: LEFT IS RECENT TRANSACTIONS TABLE, RIGHT IS UPCOMING ACTIONS & REMINDERS */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 
-                {/* Item 1: VAT Return Due */}
-                <div className="p-3 bg-[#FFF3CD]/20 border border-[#FFEBAA]/60 rounded-xl space-y-2.5">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-[#856404] flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-ping" />
-                      VAT Return Due
-                    </span>
-                    <span className="text-[10px] bg-[#FFF3CD] text-[#856404] px-1.5 py-0.5 rounded font-mono font-bold">
-                      In 4 days
-                    </span>
+                {/* SECTION 3: RECENT TRANSACTIONS */}
+                <div
+                  id="recent-transactions-section"
+                  className={`lg:col-span-8 bg-white border border-slate-200 rounded-xl p-6 space-y-4 transition-all duration-300 ${
+                    tourActive && currentStep === 1 ? 'ring-4 ring-[#7C3AED] z-50 scale-[1.01] relative shadow-2xl bg-white' : ''
+                  }`}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/50 pb-4">
+                    <div>
+                      <h3 className="font-bold text-base text-slate-900 font-sans flex items-center gap-2">
+                        Recent Transactions
+                        <span className="text-xs font-normal text-slate-400 font-mono">({filteredTransactions.length} entries)</span>
+                      </h3>
+                      <p className="text-xs text-slate-500">Real-time ledger audit trail indexed for tax calculation</p>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          setActiveActionModal('new_invoice');
+                          triggerNotification("Opened quick ledger registration form.");
+                        }}
+                        className="px-3.5 py-1.5 bg-brand-purple hover:bg-opacity-90 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <span>+ Register Invoice</span>
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-[11px] text-[#856404]/90 font-sans leading-normal">
-                    FIRS Nigeria VAT monthly cycle return filing due-date approaches on 21st.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setActiveActionModal('vat');
-                    }}
-                    className="w-full text-center py-1.5 bg-white hover:bg-yellow-50 text-[#856404] border border-[#FFEBAA]/70 rounded-lg text-xs font-bold cursor-pointer transition-colors"
-                  >
-                    Prepare Return
-                  </button>
+
+                  {/* Table rendering of last 10 transactions */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs text-slate-700">
+                      <thead>
+                        <tr className="border-b border-slate-100 bg-slate-50 text-slate-500 uppercase tracking-tight text-[10px] font-bold">
+                          <th className="py-2 px-3">Date</th>
+                          <th className="py-2 px-3">Type</th>
+                          <th className="py-2 px-3">Description</th>
+                          <th className="py-2 px-3 text-right">Amount</th>
+                          <th className="py-2 px-3 text-center">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 divide-dashed font-sans">
+                        {filteredTransactions.slice(0, 10).map((t) => (
+                          <tr key={t.id} className="hover:bg-slate-50/50 transition-colors">
+                            <td className="py-2.5 px-3 text-slate-400 font-mono font-medium">{t.date}</td>
+                            <td className="py-2.5 px-3">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                t.type === 'Sale'
+                                  ? 'bg-purple-50 text-brand-purple border border-purple-150'
+                                  : t.type === 'Receipt'
+                                  ? 'bg-blue-50 text-blue-600 border border-blue-150'
+                                  : 'bg-amber-50 text-amber-700 border border-amber-150'
+                              }`}>
+                                {t.type}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <div className="font-semibold text-slate-800">{t.description}</div>
+                              <div className="text-[9px] text-slate-400 font-mono">{t.id}</div>
+                            </td>
+                            <td className="py-2.5 px-3 text-right font-mono font-bold text-slate-900">
+                              {formatNaira(t.amount)}
+                            </td>
+                            <td className="py-2.5 px-3 text-center">
+                              <span className={`inline-block px-2 py-0.5 rounded-full text-[9px] font-bold border ${
+                                t.status === 'Completed'
+                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                  : t.status === 'Pending'
+                                  ? 'bg-amber-50 text-amber-700 border-amber-100'
+                                  : 'bg-red-50 text-red-700 border-red-100'
+                              }`}>
+                                {t.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+
+                        {filteredTransactions.length === 0 && (
+                          <tr>
+                            <td colSpan={5} className="py-8 text-center text-slate-400 italic">
+                              No transactions matching "{searchQuery}" found in active ledgers.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Expander list trigger */}
+                  <div className="pt-2 border-t border-slate-100 flex justify-center">
+                    <button
+                      onClick={() => {
+                        setActiveActionModal('audit_trail');
+                      }}
+                      className="text-xs text-brand-purple hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                    >
+                      View Full Transaction History
+                      <ArrowRight size={13} />
+                    </button>
+                  </div>
                 </div>
 
-                {/* Item 2: Vendors Requiring KYC */}
-                <div className="p-3 bg-red-50/20 border border-red-150/40 rounded-xl space-y-2.5">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-red-800 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-red-600 rounded-full shrink-0" />
-                      Vendors Requiring KYC
-                    </span>
-                    <span className="text-[10px] bg-red-100 text-red-800 px-1.5 py-0.5 rounded font-mono font-bold">
-                      4 Pending
-                    </span>
+                {/* SECTION 4: UPCOMING ACTIONS & REMINDERS */}
+                <div
+                  id="upcoming-actions-section"
+                  className={`lg:col-span-4 bg-white border border-slate-200 rounded-xl p-6 space-y-4 transition-all duration-300 ${
+                    tourActive && currentStep === 2 ? 'ring-4 ring-[#7C3AED] z-50 scale-[1.01] relative shadow-2xl bg-white' : ''
+                  }`}
+                >
+                  <div className="border-b border-slate-200/50 pb-3">
+                    <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
+                      <Calendar size={15} className="text-brand-purple" />
+                      Upcoming Actions &amp; Reminders
+                    </h3>
+                    <p className="text-xs text-slate-400">Statutory countdown alarms &amp; tasks</p>
                   </div>
-                  <p className="text-[11px] text-red-800/90 font-sans leading-normal">
-                    4 active vendors require statutory TIN registration updates before next payment batch.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setActiveActionModal('kyc');
-                    }}
-                    className="w-full text-center py-1.5 bg-white hover:bg-red-50 text-red-800 border border-red-200/50 rounded-lg text-xs font-bold cursor-pointer transition-colors"
-                  >
-                    Review Vendors
-                  </button>
-                </div>
 
-                {/* Item 3: Run CIT Computation */}
-                <div className="p-3 bg-blue-50/30 border border-blue-150/40 rounded-xl space-y-2.5">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-blue-800 flex items-center gap-1">
-                      CIT Computation
-                    </span>
-                    <span className="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono font-bold">
-                      Recommended
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-blue-800/90 font-sans leading-normal">
-                    Q2 is ending in June. Compute estimated corporate liability to claim active reliefs.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setActiveActionModal('cit');
-                    }}
-                    className="w-full text-center py-1.5 bg-white hover:bg-blue-50 text-blue-800 border border-blue-200/55 rounded-lg text-xs font-bold cursor-pointer transition-colors"
-                  >
-                    Run Now
-                  </button>
-                </div>
+                  <div className="space-y-4">
+                    
+                    {/* Item 1: VAT Return Due */}
+                    <div className="p-3 bg-[#FFF3CD]/20 border border-[#FFEBAA]/60 rounded-xl space-y-2.5">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-[#856404] flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-ping" />
+                          VAT Return Due
+                        </span>
+                        <span className="text-[10px] bg-[#FFF3CD] text-[#856404] px-1.5 py-0.5 rounded font-mono font-bold">
+                          In 4 days
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#856404]/90 font-sans leading-normal">
+                        FIRS Nigeria VAT monthly cycle return filing due-date approaches on 21st.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setActiveActionModal('vat');
+                        }}
+                        className="w-full text-center py-1.5 bg-white hover:bg-yellow-50 text-[#856404] border border-[#FFEBAA]/70 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+                      >
+                        Prepare Return
+                      </button>
+                    </div>
 
-                {/* Item 4: Low Stock Alert */}
-                <div className="p-3 bg-purple-50/20 border border-purple-150/40 rounded-xl space-y-2.5">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-brand-purple flex items-center gap-1">
-                      Low Stock Alerts
-                    </span>
-                    <span className="text-[10px] bg-purple-100 text-brand-purple px-1.5 py-0.5 rounded font-mono font-bold">
-                      {lowStockAlertsCount} Materials Low
-                    </span>
+                    {/* Item 2: Vendors Requiring KYC */}
+                    <div className="p-3 bg-red-50/20 border border-red-150/40 rounded-xl space-y-2.5">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-red-800 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 bg-red-600 rounded-full shrink-0" />
+                          Vendors Requiring KYC
+                        </span>
+                        <span className="text-[10px] bg-red-100 text-red-800 px-1.5 py-0.5 rounded font-mono font-bold">
+                          4 Pending
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-red-800/90 font-sans leading-normal">
+                        4 active vendors require statutory TIN registration updates before next payment batch.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setActiveActionModal('kyc');
+                        }}
+                        className="w-full text-center py-1.5 bg-white hover:bg-red-50 text-red-800 border border-red-200/50 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+                      >
+                        Review Vendors
+                      </button>
+                    </div>
+
+                    {/* Item 3: CIT Computation */}
+                    <div className="p-3 bg-blue-50/30 border border-blue-150/40 rounded-xl space-y-2.5">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-blue-800 flex items-center gap-1">
+                          CIT Computation
+                        </span>
+                        <span className="text-[10px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-mono font-bold">
+                          Recommended
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-blue-800/90 font-sans leading-normal">
+                        Q2 is ending in June. Compute estimated corporate liability to claim active reliefs.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setActiveActionModal('cit');
+                        }}
+                        className="w-full text-center py-1.5 bg-white hover:bg-blue-50 text-blue-800 border border-blue-200/55 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+                      >
+                        Run Now
+                      </button>
+                    </div>
+
+                    {/* Item 4: Low Stock Alert */}
+                    <div className="p-3 bg-purple-50/20 border border-purple-150/40 rounded-xl space-y-2.5">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-brand-purple flex items-center gap-1">
+                          Low Stock Alerts
+                        </span>
+                        <span className="text-[10px] bg-purple-100 text-brand-purple px-1.5 py-0.5 rounded font-mono font-bold">
+                          {lowStockAlertsCount || 4} Materials Low
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-brand-purple/90 font-sans leading-normal">
+                        Stock count has fallen below safety levels for monitored compound inventory.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setActiveTab('inventory');
+                        }}
+                        className="w-full text-center py-1.5 bg-white hover:bg-purple-100/40 text-brand-purple border border-purple-200/40 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+                      >
+                        View Inventory
+                      </button>
+                    </div>
+
                   </div>
-                  <p className="text-[11px] text-brand-purple/90 font-sans leading-normal">
-                    Stock count has fallen below thresholds for items tracked with {formData.inventoryMethod || 'FIFO'} model.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setActiveTab('inventory');
-                    }}
-                    className="w-full text-center py-1.5 bg-white hover:bg-purple-100/40 text-brand-purple border border-purple-200/40 rounded-lg text-xs font-bold cursor-pointer transition-colors"
-                  >
-                    View Inventory
-                  </button>
                 </div>
 
               </div>
             </div>
-
-          </div>
-        </div>
-      ) : activeTab === 'pos' ? (
+          ) : activeTab === 'pos' ? (
         <POSTerminal 
           inventoryItems={inventoryItems}
           setInventoryItems={setInventoryItems}
@@ -1479,6 +1397,11 @@ export default function Dashboard({ formData, onLogout }: DashboardProps) {
         />
       ) : activeTab === 'vat' ? (
         <VATModule
+          formData={formData}
+          onAction={triggerNotification}
+        />
+      ) : activeTab === 'invoices' ? (
+        <InvoicesModule
           formData={formData}
           onAction={triggerNotification}
         />
